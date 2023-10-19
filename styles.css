@@ -65,7 +65,8 @@ body {
     flex-direction: column;
 }
 
-.operator {
+.operator,
+.result {
     height: 100px;
     width: 125px;
     border-radius: 10px;
