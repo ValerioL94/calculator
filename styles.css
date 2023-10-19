@@ -1,0 +1,22 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    height: 95vh;
+}
+
+#calculator {
+    display: flex;
+    flex-direction: column;
+    border: 5px solid black;
+    height: 600px;
+    width: 500px;
+}
+
+#display {
+    border: 5px solid grey;
+    width: auto;
+    height: 100px;
+}
