@@ -13,10 +13,63 @@ body {
     border: 5px solid black;
     height: 600px;
     width: 500px;
+    background: black;
+    border-radius: 10px;
 }
 
 #display {
-    border: 5px solid grey;
+    border: 5px solid black;
     width: auto;
     height: 100px;
+    font-size: 70px;
+    font-weight: 700;
+    background-color: rgb(172, 167, 167);
+    border-radius: 10px;
+}
+
+#top-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.clear {
+    height: 100px;
+    width: 125px;
+    background-color: #ff0000;
+    font-size: 30px;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+#numbers {
+    display: flex;
+    flex-wrap: wrap;
+    max-width: 375px;
+}
+
+#mid-container {
+    display: flex;
+}
+
+.num {
+    background-color: blue;
+    height: 100px;
+    width: 125px;
+    font-size: 30px;
+    font-weight: 700;
+    border-radius: 10px;
+}
+
+#operators {
+    display: flex;
+    flex-direction: column;
+}
+
+.operator {
+    height: 100px;
+    width: 125px;
+    border-radius: 10px;
+    font-size: 30px;
+    font-weight: 700;
+    background-color: green;
 }
