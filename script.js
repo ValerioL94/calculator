@@ -35,7 +35,7 @@ function setNumber(num) {
         secondNum += num;
         display.textContent += num;
     }
-}
+};
 
 operators.forEach(op => {
     op.addEventListener("click", () => setOperator(op.value));
@@ -50,7 +50,9 @@ function setOperator(op) {
             display.textContent += "÷";
         } else if (op === "*") {
             display.textContent += "x";
-        } else display.textContent += op;
+        } else {
+            display.textContent += op;
+        }
     } else if (operator !== "" && secondNum !== "") {
         operate(firstNum, operator, secondNum);
         operator = op;
@@ -58,8 +60,10 @@ function setOperator(op) {
             display.textContent += "÷";
         } else if (op === "*") {
             display.textContent += "x";
-        } else display.textContent += op;
-    };
+        } else {
+            display.textContent += op;
+        }
+    }
 };
 
 
@@ -134,7 +138,7 @@ function operate(firstNum, operator, secondNum) {
                 result = Math.round((a / b) * 100) / 100;
                 nextOperation();
             }
-    };
+    }
 };
 
 function nextOperation() {
