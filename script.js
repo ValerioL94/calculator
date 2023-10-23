@@ -2,7 +2,7 @@ const display = document.getElementById("display");
 const numbers = document.querySelectorAll(".num");
 const operators = document.querySelectorAll(".operator");
 const clearAll = document.getElementById("empty");
-const undo = document.getElementById("undo");
+const clearEntry = document.getElementById("undo");
 const equals = document.getElementById("equal");
 const decimal = document.getElementById("decimal");
 
@@ -10,134 +10,137 @@ let firstNum = "";
 let secondNum = "";
 let operator = "";
 let result = "";
-let firstDecimal = "";
-let secondDecimal = "";
+
+window.addEventListener("keydown", keyboardInput);
+
+function keyboardInput(e) {
+    if (e.key >= 0 && e.key <= 9) setNumber(e.key);
+    else if (e.key === "Backspace") undo();
+    else if (e.key === "Escape") reset();
+    else if (e.key === ".") setPoint();
+    else if (e.key === "=" || e.key === "Enter") giveResult();
+    else if (e.key === "+" || e.key === "-" ||
+        e.key === "*" || e.key === "/") setOperator(e.key);
+};
 
 numbers.forEach(number => {
-    number.addEventListener("click", (e) => {
-        if (operator === "") {
-            firstNum += e.target.value;
-            display.textContent += e.target.value;
-        } else {
-            secondNum += e.target.value;
-            display.textContent += e.target.value;
-        }
-    });
+    number.addEventListener("click", () => setNumber(number.value));
 });
 
-decimal.addEventListener("click", (e) => {
-    if (firstDecimal === "" && firstNum !== "") {
-        firstNum += e.target.value;
-        display.textContent += e.target.value;
-        firstDecimal = decimal.value;
-    } else if (secondDecimal === "" && secondNum !== "") {
-        secondNum += e.target.value;
-        display.textContent += e.target.value;
-        secondDecimal = decimal.value;
+function setNumber(num) {
+    if (operator === "") {
+        firstNum += num;
+        display.textContent += num;
+    } else {
+        secondNum += num;
+        display.textContent += num;
     }
-});
+}
 
 operators.forEach(op => {
-    op.addEventListener("click", (e) => {
-        if (firstNum === "" || operator !== "" && secondNum === "") {
-            // do nothing
-        } else if (operator === "") {
-            operator = e.target.value;
-            display.textContent += e.target.value;
-        } else if (operator !== "" && secondNum !== "") {
-            operate(firstNum, operator, secondNum);
-            operator = e.target.value;
-            display.textContent += e.target.value;
-        }
-    });
+    op.addEventListener("click", () => setOperator(op.value));
 });
 
-clearAll.addEventListener("click", () => {
+function setOperator(op) {
+    if (firstNum === "" || operator !== "" && secondNum === "") {
+        // do nothing
+    } else if (operator === "") {
+        operator = op;
+        if (op === "/") {
+            display.textContent += "÷";
+        } else if (op === "*") {
+            display.textContent += "x";
+        } else display.textContent += op;
+    } else if (operator !== "" && secondNum !== "") {
+        operate(firstNum, operator, secondNum);
+        operator = op;
+        if (op === "/") {
+            display.textContent += "÷";
+        } else if (op === "*") {
+            display.textContent += "x";
+        } else display.textContent += op;
+    };
+};
+
+
+
+clearAll.addEventListener("click", () => reset());
+
+function reset() {
     display.textContent = "";
     firstNum = "";
     secondNum = "";
     operator = "";
-    firstDecimal = "";
-    secondDecimal = "";
-});
+    result = "";
+};
 
-undo.addEventListener("click", () => {
-    if (secondNum.charAt(secondNum.length - 1) === ".") {
-        secondDecimal = "";
-    } else if (secondNum !== "") {
+clearEntry.addEventListener("click", () => undo());
+
+function undo() {
+    if (secondNum !== "") {
         secondNum = secondNum.slice(0, -1);
     } else if (operator !== "") {
         operator = "";
-    } else if (firstNum.charAt(firstNum.length - 1) === ".") {
-        firstDecimal = "";
     } else {
         firstNum = firstNum.slice(0, -1);
     }
     display.textContent = display.textContent.slice(0, -1);
-});
+};
 
-equals.addEventListener("click", () => {
+decimal.addEventListener("click", () => setPoint());
+
+function setPoint() {
+    if (firstNum !== "" && !firstNum.includes(".") && operator === "") {
+        firstNum += decimal.value;
+        display.textContent += decimal.value;
+    } else if (secondNum !== "" && !secondNum.includes(".")) {
+        secondNum += decimal.value;
+        display.textContent += decimal.value;
+    }
+};
+
+equals.addEventListener("click", () => giveResult());
+
+function giveResult() {
     if (secondNum !== "") {
         operate(firstNum, operator, secondNum);
     } else {
         // do nothing
     }
-});
-
-
-
-function add(a, b) {
-    result = Math.round((a + b) * 100) / 100;
-    display.textContent = result;
-    firstNum = result.toString();
-    operator = "";
-    secondNum = "";
-    firstDecimal = "";
-    secondDecimal = "";
-}
-function subtract(a, b) {
-    result = Math.round((a - b) * 100) / 100;
-    display.textContent = result;
-    firstNum = result.toString();
-    operator = "";
-    secondNum = "";
-    firstDecimal = "";
-    secondDecimal = "";
-}
-function multiply(a, b) {
-    result = Math.round((a * b) * 100) / 100;
-    display.textContent = result;
-    firstNum = result.toString();
-    operator = "";
-    secondNum = "";
-    firstDecimal = "";
-    secondDecimal = "";
-}
-function divide(a, b) {
-    if (b == 0) { display.textContent = "Invalid" }
-    else {
-        result = Math.round((a / b) * 100) / 100;
-        display.textContent = result;
-        firstNum = result.toString();
-        operator = "";
-        secondNum = "";
-        firstDecimal = "";
-        secondDecimal = "";
-    }
 };
 
 function operate(firstNum, operator, secondNum) {
+    let a = parseFloat(firstNum);
+    let b = parseFloat(secondNum);
     switch (operator) {
         case "+":
-            add(parseFloat(firstNum), parseFloat(secondNum));
+            result = Math.round((a + b) * 100) / 100;
+            nextOperation();
             break;
         case "-":
-            subtract(parseFloat(firstNum), parseFloat(secondNum));
+            result = Math.round((a - b) * 100) / 100;
+            nextOperation();
             break;
         case "*":
-            multiply(parseFloat(firstNum), parseFloat(secondNum));
+            result = Math.round((a * b) * 100) / 100;
+            nextOperation();
             break;
         case "/":
-            divide(parseFloat(firstNum), parseFloat(secondNum));
-    }
+            if (b == 0) {
+                alert("Do not divide by 0, thank you.");
+                reset();
+            }
+            else {
+                result = Math.round((a / b) * 100) / 100;
+                nextOperation();
+            }
+    };
+};
+
+function nextOperation() {
+    display.textContent = result;
+    firstNum = result.toString();
+    secondNum = "";
+    operator = "";
+    result = "";
 };
